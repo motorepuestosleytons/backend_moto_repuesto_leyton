@@ -3,7 +3,7 @@ import { pool } from '../db.js';
 // Obtener todos los usuarios
 export const obtenerUsuarios= async (req, res) => {
   try {
-    const [result] = await pool.query('SELECT * FROM Usuarios');
+    const [result] = await pool.query('SELECT * FROM Usuario');
     res.json(result);
   } catch (error) {
     return res.status(500).json({
@@ -16,7 +16,7 @@ export const obtenerUsuarios= async (req, res) => {
 // Obtener un usuario por su ID
 export const obtenerUsuario = async (req, res) => {
   try {
-    const [result] = await pool.query('SELECT * FROM Usuarios WHERE usuario = ?', [req.params.user]);
+    const [result] = await pool.query('SELECT * FROM Usuario WHERE usuario = ?', [req.params.user]);
     
     if (result.length <= 0) {
       return res.status(404).json({
@@ -36,7 +36,7 @@ export const verificarUsuario = async (req, res) => {
   try {
     const { usuario, contraseña } = req.body;
     const [result] = await pool.query(
-      'SELECT * FROM Usuarios WHERE usuario = ? AND contraseña = ?',
+      'SELECT * FROM Usuario WHERE usuario = ? AND contraseña = ?',
       [usuario, contraseña]
     );
     res.json(result.length > 0); // Devuelve true o false directamente

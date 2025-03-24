@@ -1,9 +1,9 @@
 import { pool } from '../db.js';
 
-// Obtener todos los clientes
-export const obtenerClientes= async (req, res) => {
+// Obtener todos las compras
+export const obtenerMarcas= async (req, res) => {
   try {
-    const [result] = await pool.query('SELECT * FROM Cliente');
+    const [result] = await pool.query('SELECT * FROM Compra');
     res.json(result);
   } catch (error) {
     return res.status(500).json({
@@ -13,14 +13,14 @@ export const obtenerClientes= async (req, res) => {
   }
 };
 
-// Obtener un cliente por su ID
-export const obtenerCliente = async (req, res) => {
+// Obtener una venta por su ID
+export const obtenerMarca = async (req, res) => {
   try {
-    const [result] = await pool.query('SELECT * FROM Cliente WHERE id_cliente = ?', [req.params.id]);
+    const [result] = await pool.query('SELECT * FROM Compra WHERE id_compra = ?', [req.params.id]);
     
     if (result.length <= 0) {
       return res.status(404).json({
-        mensaje: `Error al leer los datos. El ID ${req.params.id} del cliente no fue encontrado.`
+        mensaje: `Error al leer los datos. El ID ${req.params.id} de la venta no fue encontrado.`
       });
     }
     res.json(result[0]);
