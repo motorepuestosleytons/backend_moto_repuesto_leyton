@@ -1,7 +1,7 @@
 import { pool } from '../db.js';
 
 // Obtener todos las compras
-export const obtenerMarcas= async (req, res) => {
+export const obtenerCompras= async (req, res) => {
   try {
     const [result] = await pool.query('SELECT * FROM Compra');
     res.json(result);
@@ -14,7 +14,7 @@ export const obtenerMarcas= async (req, res) => {
 };
 
 // Obtener una venta por su ID
-export const obtenerMarca = async (req, res) => {
+export const obtenerCompra = async (req, res) => {
   try {
     const [result] = await pool.query('SELECT * FROM Compra WHERE id_compra = ?', [req.params.id]);
     
