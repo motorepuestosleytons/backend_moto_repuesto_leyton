@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import {  obtener, obtenerCliente } from '../controllers/proveedor.controller.js';
+import {  obtenerProveedores, obtenerProveedor } from '../controllers/proveedor.controller.js';
 
 const router = Router();
 
 // Ruta para obtener todos los clientes
-router.get('/clientes', obtenerClientes);
+router.get('/proveedores', obtenerProveedores);
 
 // Ruta para obtener un cliente por su ID
-router.get('/cliente/:id', obtenerCliente);
+router.get('/proveedor/:id', obtenerProveedor);
 
 export default router;
