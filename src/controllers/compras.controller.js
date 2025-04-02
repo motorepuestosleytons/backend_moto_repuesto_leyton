@@ -1,32 +1,29 @@
 import { pool } from '../db.js';
 
-// Obtener todos las compras
-export const obtenerCompras= async (req, res) => {
+// Obtener todas las compras con sus detalles, mostrando nombres, IDs y subtotal
+export const obtenerComprasConDetalles = async (req, res) => {
   try {
-    const [result] = await pool.query('SELECT * FROM Compra');
+    const [result] = await pool.query(`
+     SELECT 
+    c.id_compra,
+    dc.id_detalle_compra,
+    c.fecha_compra,
+    p.nombre_proveedor AS nombre_proveedor,
+    pr.nombre_ AS nombre_producto,
+    dc.cantidad,
+    dc.precio_unitario,
+    (dc.cantidad * dc.precio_unitario) AS subtotal
+   FROM compra c
+   INNER JOIN proveedor p ON c.id_proveedor = p.id_prov
+   INNER JOIN detalle_compra dc ON c.id_compra = dc.id_compra
+   INNER JOIN productos pr ON dc.id_producto = pr.id_producto;
+    `);
+    
     res.json(result);
   } catch (error) {
     return res.status(500).json({
-      mensaje: 'Ha ocurrido un error al leer los datos de los clientes.',
+      mensaje: 'Ha ocurrido un error al leer los datos de las compras.',
       error: error
-    });
-  }
-};
-
-// Obtener una venta por su ID
-export const obtenerCompra = async (req, res) => {
-  try {
-    const [result] = await pool.query('SELECT * FROM Compra WHERE id_compra = ?', [req.params.id]);
-    
-    if (result.length <= 0) {
-      return res.status(404).json({
-        mensaje: `Error al leer los datos. El ID ${req.params.id} de la venta no fue encontrado.`
-      });
-    }
-    res.json(result[0]);
-  } catch (error) {
-    return res.status(500).json({
-      mensaje: 'Ha ocurrido un error al leer los datos del cliente.'
     });
   }
 };

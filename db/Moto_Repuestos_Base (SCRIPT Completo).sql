@@ -212,7 +212,7 @@ CREATE TABLE `proveedor` (
 
 LOCK TABLES `proveedor` WRITE;
 /*!40000 ALTER TABLE `proveedor` DISABLE KEYS */;
-INSERT INTO `proveedor` VALUES (1,'Proveedor A','111-222-3333','Bajaj'),(2,'Proveedor B','987-654-3210','Susuki'),(3,'Proveedor A','123-456-7890','Bajaj'),(4,'Proveedor B','987-654-3210','Susuki'),(5,'Proveedor A','123-456-7890','Bajaj'),(6,'Proveedor B','987-654-3210','Susuki');
+INSERT INTO `proveedor` VALUES (1,'Juan Aragon','111-222-3333','Bajaj'),(2,'Lopez Cisneros','987-654-3210','Susuki'),(3,'Pedro Pablo','123-456-7890','Bajaj'),(4,'Juan Perez','987-654-3210','Susuki'),(5,'Luis Amanzor','123-456-7890','Bajaj'),(6,'Jeysi Lopez','987-654-3210','Susuki');
 /*!40000 ALTER TABLE `proveedor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -276,4 +276,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-24 16:57:57
+-- Dump completed on 2025-04-01 12:13:22
