@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {  obtenerProveedores, obtenerProveedor } from '../controllers/proveedor.controller.js';
+import {  obtenerProveedores, obtenerProveedor, registrarProveedor } from '../controllers/proveedor.controller.js';
 
 const router = Router();
 
@@ -8,5 +8,8 @@ router.get('/proveedores', obtenerProveedores);
 
 // Ruta para obtener un cliente por su ID
 router.get('/proveedor/:id', obtenerProveedor);
+
+// Ruta para obtener un cliente por su ID
+router.post('/registrarproveedor', registrarProveedor);
 
 export default router;

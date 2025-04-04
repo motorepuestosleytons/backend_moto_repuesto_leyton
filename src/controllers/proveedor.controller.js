@@ -30,3 +30,67 @@ export const obtenerProveedor = async (req, res) => {
     });
   }
 };
+
+// Registrar un nuevo proveedor
+export const registrarProveedor = async (req, res) => {
+  try {
+    const { 
+      nombre_proveedor, 
+      telefono, 
+      empresa 
+    } = req.body;
+
+    // Validación básica de campos requeridos
+    if (!nombre_proveedor || !telefono || !empresa) {
+      return res.status(400).json({
+        mensaje: 'Faltan campos requeridos: nombre_proveedor, telefono o empresa.'
+      });
+    }
+
+    // Validaciones adicionales
+    if (typeof nombre_proveedor !== 'string' || nombre_proveedor.length > 50) {
+      return res.status(400).json({
+        mensaje: 'El nombre del proveedor debe ser una cadena de texto de máximo 50 caracteres.'
+      });
+    }
+
+    if (typeof telefono !== 'string' || telefono.length > 15) {
+      return res.status(400).json({
+        mensaje: 'El teléfono debe ser una cadena de texto de máximo 15 caracteres.'
+      });
+    }
+
+    // Validación adicional para el formato del teléfono (opcional, ajusta según tus necesidades)
+    const telefonoRegex = /^[0-9+()-]+$/;
+    if (!telefonoRegex.test(telefono)) {
+      return res.status(400).json({
+        mensaje: 'El teléfono solo puede contener números, y los caracteres +, (, ) o -.'
+      });
+    }
+
+    if (typeof empresa !== 'string' || empresa.length > 100) {
+      return res.status(400).json({
+        mensaje: 'El nombre de la empresa debe ser una cadena de texto de máximo 100 caracteres.'
+      });
+    }
+
+    const [result] = await pool.query(
+      'INSERT INTO proveedor (nombre_proveedor, telefono, empresa) VALUES (?, ?, ?)',
+      [
+        nombre_proveedor,
+        telefono,
+        empresa
+      ]
+    );
+
+    res.status(201).json({ 
+      id_prov: result.insertId,
+      mensaje: 'Proveedor registrado exitosamente'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Ha ocurrido un error al registrar el proveedor.',
+      error: error.message
+    });
+  }
+};
