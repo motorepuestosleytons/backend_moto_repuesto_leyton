@@ -30,3 +30,83 @@ export const obtenerProducto = async (req, res) => {
     });
   }
 };
+
+// Registrar un nuevo producto
+export const registrarProducto = async (req, res) => {
+  try {
+    const { 
+      nombre_, 
+      modelo, 
+      precio_venta, 
+      precio_compra, 
+      stock, 
+      id_marca 
+    } = req.body;
+
+    // Validación básica de campos requeridos
+    if (!nombre_ || !modelo || !precio_venta || !precio_compra || !stock || !id_marca) {
+      return res.status(400).json({
+        mensaje: 'Faltan campos requeridos: nombre_, modelo, precio_venta, precio_compra, stock o id_marca.'
+      });
+    }
+
+    // Validaciones adicionales
+    if (typeof nombre_ !== 'string' || nombre_.length > 50) {
+      return res.status(400).json({
+        mensaje: 'El nombre_ debe ser una cadena de texto de máximo 50 caracteres.'
+      });
+    }
+
+    if (typeof modelo !== 'string' || modelo.length > 40) {
+      return res.status(400).json({
+        mensaje: 'El modelo debe ser una cadena de texto de máximo 40 caracteres.'
+      });
+    }
+
+    if (typeof precio_venta !== 'number' || precio_venta <= 0) {
+      return res.status(400).json({
+        mensaje: 'El precio de venta debe ser un número mayor a 0.'
+      });
+    }
+
+    if (typeof precio_compra !== 'number' || precio_compra <= 0) {
+      return res.status(400).json({
+        mensaje: 'El precio de compra debe ser un número mayor a 0.'
+      });
+    }
+
+    if (!Number.isInteger(stock) || stock < 0) {
+      return res.status(400).json({
+        mensaje: 'El stock debe ser un número entero mayor o igual a 0.'
+      });
+    }
+
+    if (!Number.isInteger(id_marca) || id_marca <= 0) {
+      return res.status(400).json({
+        mensaje: 'El id_marca debe ser un número entero mayor a 0.'
+      });
+    }
+
+    const [result] = await pool.query(
+      'INSERT INTO productos (nombre_, modelo, precio_venta, precio_compra, stock, id_marca) VALUES (?, ?, ?, ?, ?, ?)',
+      [
+        nombre_,
+        modelo,
+        precio_venta,
+        precio_compra,
+        stock,
+        id_marca
+      ]
+    );
+
+    res.status(201).json({ 
+      id_producto: result.insertId,
+      mensaje: 'Producto registrado exitosamente'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Ha ocurrido un error al registrar el producto.',
+      error: error.message
+    });
+  }
+};
