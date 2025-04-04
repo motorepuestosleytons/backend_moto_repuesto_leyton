@@ -30,3 +30,29 @@ export const obtenerMarca = async (req, res) => {
     });
   }
 };
+
+// Registrar una nueva marca
+export const registrarMarca = async (req, res) => {
+  try {
+    const { marca } = req.body;
+
+    // Validar que el campo marca esté presente y sea una cadena de texto válida
+    if (!marca || typeof marca !== 'string' || marca.length > 30) {
+      return res.status(400).json({
+        mensaje: 'El nombre de la marca es obligatorio y debe ser una cadena de máximo 30 caracteres.',
+      });
+    }
+
+    const [result] = await pool.query(
+      'INSERT INTO marca (marca) VALUES (?)',
+      [marca]
+    );
+
+    res.status(201).json({ id_marca: result.insertId });
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Ha ocurrido un error al registrar la marca.',
+      error: error.message
+    });
+  }
+};
