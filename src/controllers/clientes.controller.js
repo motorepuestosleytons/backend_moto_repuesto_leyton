@@ -1,7 +1,7 @@
 import { pool } from '../db.js';
 
 // Obtener todos los clientes
-export const obtenerClientes= async (req, res) => {
+export const obtenerClientes = async (req, res) => {
   try {
     const [result] = await pool.query('SELECT * FROM Cliente');
     res.json(result);
@@ -27,6 +27,27 @@ export const obtenerCliente = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al leer los datos del cliente.'
+    });
+  }
+};
+
+// Buscar clientes por nombre, apellido o cédula
+export const buscarClientes = async (req, res) => {
+  try {
+    const { termino } = req.query;
+    const [result] = await pool.query(
+      `SELECT * FROM Cliente WHERE nombre_cliente LIKE ? OR apellido LIKE ? OR cedula LIKE ?`,
+      [`%${termino}%`, `%${termino}%`, `%${termino}%`]
+    );
+
+    if (result.length <= 0) {
+      return res.status(404).json({ mensaje: 'No se encontraron resultados para la búsqueda.' });
+    }
+    res.json(result);
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Error al realizar la búsqueda.',
+      error: error.message
     });
   }
 };
@@ -73,7 +94,7 @@ export const registrarCliente = async (req, res) => {
       });
     }
 
-    // Validación adicional para el formato del teléfono (opcional, ajusta según tus necesidades)
+    // Validación adicional para el formato del teléfono
     const telefonoRegex = /^[0-9+()-]+$/;
     if (!telefonoRegex.test(telefono)) {
       return res.status(400).json({
@@ -82,13 +103,8 @@ export const registrarCliente = async (req, res) => {
     }
 
     const [result] = await pool.query(
-      'INSERT INTO cliente (cedula, nombre_cliente, apellido, telefono) VALUES (?, ?, ?, ?)',
-      [
-        cedula,
-        nombre_cliente,
-        apellido,
-        telefono
-      ]
+      'INSERT INTO Cliente (cedula, nombre_cliente, apellido, telefono) VALUES (?, ?, ?, ?)',
+      [cedula, nombre_cliente, apellido, telefono]
     );
 
     res.status(201).json({ 
@@ -99,6 +115,52 @@ export const registrarCliente = async (req, res) => {
     return res.status(500).json({
       mensaje: 'Ha ocurrido un error al registrar el cliente.',
       error: error.message
+    });
+  }
+};
+
+// Eliminar un cliente por su ID
+export const eliminarCliente = async (req, res) => {
+  try {
+    const [result] = await pool.query('DELETE FROM cliente WHERE id_cliente = ?', [req.params.id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        mensaje: `Error al eliminar el cliente. El ID ${req.params.id} no fue encontrado.`
+      });
+    }
+
+    res.status(204).send(); // Respuesta sin contenido para indicar éxito
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Ha ocurrido un error al eliminar el cliente.',
+      error: error
+    });
+  }
+};
+
+// Actualizar un cliente por su ID (parcial o completa)
+export const actualizarCliente = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const datos = req.body;
+
+    const [resultado] = await pool.query(
+      'UPDATE cliente SET ? WHERE id_cliente = ?',
+      [datos, id]
+    );
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        mensaje: `El cliente con ID ${id} no existe.`,
+      });
+    }
+
+    res.status(204).send(); // Respuesta sin contenido para indicar éxito
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Error al actualizar el cliente.',
+      error: error,
     });
   }
 };
