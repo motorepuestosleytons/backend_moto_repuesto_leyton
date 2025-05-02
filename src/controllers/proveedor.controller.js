@@ -94,3 +94,47 @@ export const registrarProveedor = async (req, res) => {
     });
   }
 };
+
+export const eliminarProveedor = async (req, res) => {
+  try {
+    const [result] = await pool.query('DELETE FROM proveedor WHERE id_prov = ?', [req.params.id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        mensaje: `Error al eliminar el proveedor. El ID ${req.params.id} no fue encontrado.`
+      });
+    }
+
+    res.status(204).send(); // Respuesta sin contenido para indicar éxito
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Ha ocurrido un error al eliminar el proveedor.',
+      error: error
+    });
+  }
+};
+
+export const actualizarProveedor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const datos = req.body;
+
+    const [resultado] = await pool.query(
+      'UPDATE proveedor SET ? WHERE id_prov = ?',
+      [datos, id]
+    );
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        mensaje: `El proveedor con ID ${id} no existe.`,
+      });
+    }
+
+    res.status(204).send(); // Respuesta sin contenido para indicar éxito
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: 'Error al actualizar el proveedor.',
+      error: error,
+    });
+  }
+};
