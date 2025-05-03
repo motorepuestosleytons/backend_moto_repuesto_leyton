@@ -6,7 +6,9 @@ import rutasProductos from './routes/productos.routes.js';
 import rutasMarcas from './routes/marcas.routes.js';
 import rutasVentas from './routes/ventas.routes.js';
 import rutasCompras from './routes/compras.routes.js';
-import rutasProveedores from './routes/proveedor.routes.js'
+import rutasProveedores from './routes/proveedor.routes.js';
+import rutasDetalles_ventas from'./routes/detalles_ventas.routes.js';
+import rutasDetalles_compras from'./routes/detalles_compras.routes.js';
 
 const app = express();
 
@@ -25,6 +27,8 @@ app.use('/api', rutasMarcas);
 app.use('/api', rutasVentas);
 app.use('/api', rutasCompras);
 app.use('/api', rutasProveedores);
+app.use('/api', rutasDetalles_ventas);
+app.use('/api', rutasDetalles_compras);
 
 // Manejo de rutas no encontradas
 app.use((req, res, next) => {
