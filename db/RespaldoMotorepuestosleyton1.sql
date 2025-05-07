@@ -2,7 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `moto_repuestos_leyton_1` /*!40100 DEFAULT CHARAC
 USE `moto_repuestos_leyton_1`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: moto_repuestos_leyton_1
+-- Host: localhost    Database: moto_repuestos_leyton_1
 -- ------------------------------------------------------
 -- Server version	8.0.34
 
@@ -31,7 +31,7 @@ CREATE TABLE `cliente` (
   `apellido` varchar(20) NOT NULL,
   `telefono` varchar(15) NOT NULL,
   PRIMARY KEY (`id_cliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `cliente` (
 
 LOCK TABLES `cliente` WRITE;
 /*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
-INSERT INTO `cliente` VALUES (1,'123-456-7890A','Juan','Pérez','8888-9999'),(2,'987-654-3210B','María','Gómez','8888-5678'),(3,'123-456-7890A','Juan','Pérez','8888-1234'),(4,'987-654-3210B','María','Gómez','8888-5678'),(5,'123-456-7890A','Juan','Pérez','8888-1234'),(6,'987-654-3210B','María','Gómez','8888-5678');
+INSERT INTO `cliente` VALUES (1,'123-456-7890A','Jua','Pérez','8888-9999'),(2,'987-654-3210B','María','Gómez','8888-5678'),(3,'123-456-7890A','Juan','Pérez','8888-1234'),(4,'987-654-3210B','María','Gómez','8888-5678'),(8,'1212309051002A','steven','lazo','12304566');
 /*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -58,7 +58,7 @@ CREATE TABLE `compra` (
   PRIMARY KEY (`id_compra`),
   KEY `fk_proveedor_compra` (`id_proveedor`),
   CONSTRAINT `fk_proveedor_compra` FOREIGN KEY (`id_proveedor`) REFERENCES `proveedor` (`id_prov`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +67,7 @@ CREATE TABLE `compra` (
 
 LOCK TABLES `compra` WRITE;
 /*!40000 ALTER TABLE `compra` DISABLE KEYS */;
-INSERT INTO `compra` VALUES (3,'2024-07-01 10:00:00',1),(4,'2024-07-02 15:00:00',2),(5,'2024-07-01 10:00:00',1),(6,'2024-07-02 15:00:00',2),(7,'2024-07-01 10:00:00',1),(8,'2024-07-02 15:00:00',2);
+INSERT INTO `compra` VALUES (3,'2024-07-01 10:00:00',1),(4,'2024-07-02 15:00:00',2),(5,'2024-07-01 10:00:00',1),(6,'2024-07-02 15:00:00',2),(7,'2024-07-01 10:00:00',1),(8,'2024-07-02 15:00:00',2),(10,'2025-05-03 03:58:51',8);
 /*!40000 ALTER TABLE `compra` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,9 +88,9 @@ CREATE TABLE `detalle_compra` (
   PRIMARY KEY (`id_detalle_compra`),
   KEY `fk_producto_compra` (`id_producto`),
   KEY `fk_compra_detalle` (`id_compra`),
-  CONSTRAINT `fk_compra_detalle` FOREIGN KEY (`id_compra`) REFERENCES `compra` (`id_compra`),
+  CONSTRAINT `fk_compra_detalle` FOREIGN KEY (`id_compra`) REFERENCES `compra` (`id_compra`) ON DELETE CASCADE,
   CONSTRAINT `fk_producto_compra` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +99,7 @@ CREATE TABLE `detalle_compra` (
 
 LOCK TABLES `detalle_compra` WRITE;
 /*!40000 ALTER TABLE `detalle_compra` DISABLE KEYS */;
-INSERT INTO `detalle_compra` VALUES (3,175,10,1,3,2012.5),(4,50,5,2,4,287.5),(5,175,10,1,3,2012.5),(6,50,5,2,4,287.5),(7,175,10,1,3,2012.5),(8,50,5,2,4,287.5);
+INSERT INTO `detalle_compra` VALUES (3,175,10,1,3,2012.5),(4,50,5,2,4,287.5),(5,175,10,1,3,2012.5),(6,50,5,2,4,287.5),(7,175,10,1,3,2012.5),(8,50,5,2,4,287.5),(10,8,10,7,10,80);
 /*!40000 ALTER TABLE `detalle_compra` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -121,8 +121,8 @@ CREATE TABLE `detalle_venta` (
   KEY `fk_venta_detalle` (`id_venta`),
   KEY `fk_producto_detalle` (`id_producto`),
   CONSTRAINT `fk_producto_detalle` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`),
-  CONSTRAINT `fk_venta_detalle` FOREIGN KEY (`id_venta`) REFERENCES `venta` (`id_venta`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fk_venta_detalle` FOREIGN KEY (`id_venta`) REFERENCES `venta` (`id_venta`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +131,7 @@ CREATE TABLE `detalle_venta` (
 
 LOCK TABLES `detalle_venta` WRITE;
 /*!40000 ALTER TABLE `detalle_venta` DISABLE KEYS */;
-INSERT INTO `detalle_venta` VALUES (1,200,10,1,1,1150),(3,200,5,1,1,1150),(4,100,1,2,2,115),(5,200,5,1,1,1150),(6,100,1,2,2,115);
+INSERT INTO `detalle_venta` VALUES (9,10.5,10,7,9,105),(10,220,2,1,10,440),(19,200,10,1,1,2000),(20,100,1,2,2,100),(24,220,10,1,11,2200);
 /*!40000 ALTER TABLE `detalle_venta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -146,7 +146,7 @@ CREATE TABLE `marca` (
   `id_marca` int NOT NULL AUTO_INCREMENT,
   `marca` varchar(30) NOT NULL,
   PRIMARY KEY (`id_marca`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,7 +155,7 @@ CREATE TABLE `marca` (
 
 LOCK TABLES `marca` WRITE;
 /*!40000 ALTER TABLE `marca` DISABLE KEYS */;
-INSERT INTO `marca` VALUES (1,'Suzuki'),(2,'Yamaha'),(3,'Honda'),(4,'Yamaha'),(5,'Honda'),(6,'Yamaha');
+INSERT INTO `marca` VALUES (1,'Suzuki'),(2,'Yamaha'),(3,'Hondas'),(4,'Yamaha'),(5,'Honda'),(8,'Genesis');
 /*!40000 ALTER TABLE `marca` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -177,7 +177,7 @@ CREATE TABLE `productos` (
   PRIMARY KEY (`id_producto`),
   KEY `id_marca` (`id_marca`),
   CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`id_marca`) REFERENCES `marca` (`id_marca`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -186,7 +186,7 @@ CREATE TABLE `productos` (
 
 LOCK TABLES `productos` WRITE;
 /*!40000 ALTER TABLE `productos` DISABLE KEYS */;
-INSERT INTO `productos` VALUES (1,'Cable Acelerador','Navi',220,175,30,1),(2,'Aceite','Havoline',100,50,4,2),(3,'Cable Acelerador','Navi',200,175,30,1),(4,'Aceite','Havoline',100,50,4,2),(5,'Cable Acelerador','Navi',200,175,30,1),(6,'Aceite','Havoline',100,50,4,2);
+INSERT INTO `productos` VALUES (1,'Cable Acelerador','Navi',220,175,28,1),(2,'Aceite','Havoline',100,50,5,2),(3,'Cable Acelerador','Navi',200,175,30,1),(4,'Aceite','Havoline',100,50,4,2),(5,'Cable Acelerador','Navi',200,175,30,1),(6,'Aceite','Havoline',100,50,4,2),(7,'Producto Ejemplo','Modelo 123',10.5,8,90,1),(8,'pide vias','150',1500,1000,1000,5),(11,'Disco Freno','150',555,500,1,5);
 /*!40000 ALTER TABLE `productos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -203,7 +203,7 @@ CREATE TABLE `proveedor` (
   `telefono` varchar(15) NOT NULL,
   `empresa` varchar(100) NOT NULL,
   PRIMARY KEY (`id_prov`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -212,7 +212,7 @@ CREATE TABLE `proveedor` (
 
 LOCK TABLES `proveedor` WRITE;
 /*!40000 ALTER TABLE `proveedor` DISABLE KEYS */;
-INSERT INTO `proveedor` VALUES (1,'Juan Aragon','111-222-3333','Bajaj'),(2,'Lopez Cisneros','987-654-3210','Susuki'),(3,'Pedro Pablo','123-456-7890','Bajaj'),(4,'Juan Perez','987-654-3210','Susuki'),(5,'Luis Amanzor','123-456-7890','Bajaj'),(6,'Jeysi Lopez','987-654-3210','Susuki');
+INSERT INTO `proveedor` VALUES (1,'Carlos','111-222-3333','Bajaj'),(2,'Proveedor B','987-654-3210','Susuki'),(3,'Proveedor A','123-456-7890','Bajaj'),(4,'Proveedor B','987-654-3210','Susuki'),(5,'Proveedor A','123-456-7890','Bajaj'),(6,'Proveedor B','987-654-3210','Susuki'),(7,'Proveedor C','89262526','Honda'),(8,'Juan Perez','2323-8956','Honda'),(9,'Proveedor C','89262526','Honda');
 /*!40000 ALTER TABLE `proveedor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -254,7 +254,7 @@ CREATE TABLE `venta` (
   PRIMARY KEY (`id_venta`),
   KEY `fk_cliente_venta` (`id_cliente`),
   CONSTRAINT `fk_cliente_venta` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,9 +263,17 @@ CREATE TABLE `venta` (
 
 LOCK TABLES `venta` WRITE;
 /*!40000 ALTER TABLE `venta` DISABLE KEYS */;
-INSERT INTO `venta` VALUES (1,'2024-05-08 12:00:00',1),(2,'2024-05-07 15:00:00',2),(3,'2024-05-06 10:00:00',1),(4,'2024-05-07 15:00:00',2),(5,'2024-05-06 10:00:00',1),(6,'2024-05-07 15:00:00',2);
+INSERT INTO `venta` VALUES (1,'2024-05-09 12:00:00',8),(2,'2024-05-07 21:00:00',4),(3,'2024-05-06 10:00:00',1),(4,'2024-05-07 15:00:00',2),(5,'2024-05-06 10:00:00',1),(6,'2024-05-07 15:00:00',2),(9,'2025-05-05 17:08:05',4),(10,'2025-05-05 18:42:33',8),(11,'2025-05-07 09:53:24',3);
 /*!40000 ALTER TABLE `venta` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping events for database 'moto_repuestos_leyton_1'
+--
+
+--
+-- Dumping routines for database 'moto_repuestos_leyton_1'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -276,4 +284,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-01 12:13:22
+-- Dump completed on 2025-05-07 16:48:46

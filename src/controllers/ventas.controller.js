@@ -116,3 +116,57 @@ export const registrarVenta = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al registrar la venta', error: error.message });
   }
 };
+
+export const actualizarVenta = async (req, res) => {
+  const { id_venta } = req.params;
+  const { id_cliente, fecha_venta, detalles } = req.body;
+
+  try {
+    // Formatear la fecha al formato MySQL
+    const fechaVentaFormateada = new Date(fecha_venta).toISOString().slice(0, 19).replace('T', ' ');
+
+    // Actualizar la venta
+    const [ventaResult] = await pool.query(
+      'UPDATE venta SET id_cliente = ?, fecha_venta = ? WHERE id_venta = ?',
+      [id_cliente, fechaVentaFormateada, id_venta]
+    );
+
+    if (ventaResult.affectedRows === 0) {
+      return res.status(404).json({ mensaje: 'Venta no encontrada' });
+    }
+
+    // Obtener detalles actuales para restaurar stock
+    const [detallesActuales] = await pool.query(
+      'SELECT id_producto, cantidad FROM detalle_venta WHERE id_venta = ?',
+      [id_venta]
+    );
+
+    // Restaurar stock de productos anteriores
+    for (const detalle of detallesActuales) {
+      await pool.query(
+        'UPDATE productos SET stock = stock + ? WHERE id_producto = ?',
+        [detalle.cantidad, detalle.id_producto]
+      );
+    }
+
+    // Eliminar detalles actuales
+    await pool.query('DELETE FROM detalle_venta WHERE id_venta = ?', [id_venta]);
+
+    // Insertar nuevos detalles y actualizar stock
+    for (const detalle of detalles) {
+      const total = detalle.cantidad * detalle.precio_unitario;
+      await pool.query(
+        'INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario, total) VALUES (?, ?, ?, ?, ?)',
+        [id_venta, detalle.id_producto, detalle.cantidad, detalle.precio_unitario, total]
+      );
+      await pool.query(
+        'UPDATE productos SET stock = stock - ? WHERE id_producto = ?',
+        [detalle.cantidad, detalle.id_producto]
+      );
+    }
+
+    res.json({ mensaje: 'Venta actualizada correctamente' });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al actualizar la venta', error: error.message });
+  }
+};
