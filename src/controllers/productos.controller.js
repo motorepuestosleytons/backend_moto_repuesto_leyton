@@ -40,17 +40,18 @@ export const registrarProducto = async (req, res) => {
       precio_venta, 
       precio_compra, 
       stock, 
-      id_marca 
+      id_marca,
+      imagen
     } = req.body;
 
     // Validación básica de campos requeridos
-    if (!nombre_ || !modelo || !precio_venta || !precio_compra || !stock || !id_marca) {
+    if (!nombre_ || !modelo || !precio_venta || !precio_compra || stock === undefined || !id_marca) {
       return res.status(400).json({
         mensaje: 'Faltan campos requeridos: nombre_, modelo, precio_venta, precio_compra, stock o id_marca.'
       });
     }
 
-    // Validaciones adicionales
+    // Validaciones detalladas
     if (typeof nombre_ !== 'string' || nombre_.length > 50) {
       return res.status(400).json({
         mensaje: 'El nombre_ debe ser una cadena de texto de máximo 50 caracteres.'
@@ -87,14 +88,24 @@ export const registrarProducto = async (req, res) => {
       });
     }
 
+    // imagen es opcional, si viene valida que sea string base64
+    if (imagen && typeof imagen !== 'string') {
+      return res.status(400).json({
+        mensaje: 'La imagen debe ser una cadena de texto codificada en base64.'
+      });
+    }
+
     const [result] = await pool.query(
-      'INSERT INTO productos (nombre_, modelo, precio_venta, precio_compra, stock, id_marca) VALUES (?, ?, ?, ?, ?, ?)',
+      `INSERT INTO productos 
+      (nombre_, modelo, precio_venta, precio_compra, stock, imagen, id_marca) 
+      VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         nombre_,
         modelo,
         precio_venta,
         precio_compra,
         stock,
+        imagen || null,
         id_marca
       ]
     );
@@ -110,6 +121,7 @@ export const registrarProducto = async (req, res) => {
     });
   }
 };
+
 
 // Eliminar un producto por su ID
 export const eliminarProducto = async (req, res) => {
@@ -137,22 +149,33 @@ export const actualizarProducto = async (req, res) => {
     const { id } = req.params;
     const datos = req.body;
 
+    // Ejecutar la consulta de actualización
     const [resultado] = await pool.query(
       'UPDATE productos SET ? WHERE id_producto = ?',
       [datos, id]
     );
 
+    // Si no se afectaron filas, significa que el ID no existe
     if (resultado.affectedRows === 0) {
       return res.status(404).json({
         mensaje: `El producto con ID ${id} no existe.`,
       });
     }
 
-    res.status(204).send(); // Respuesta sin contenido para indicar éxito
+    // Consultar el producto actualizado para retornarlo en la respuesta
+    const [productoActualizado] = await pool.query(
+      'SELECT * FROM productos WHERE id_producto = ?',
+      [id]
+    );
+
+    res.status(200).json({
+      mensaje: 'Producto actualizado correctamente.',
+      producto: productoActualizado[0] // Retorna el producto actualizado
+    });
   } catch (error) {
     return res.status(500).json({
       mensaje: 'Error al actualizar el producto.',
-      error: error,
+      error: error.message,
     });
   }
 };
