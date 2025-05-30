@@ -10,6 +10,7 @@ import rutasProveedores from './routes/proveedor.routes.js';
 import rutasDetalles_ventas from'./routes/detalles_ventas.routes.js';
 import rutasDetalles_compras from'./routes/detalles_compras.routes.js';
 import rutasEstadisticas from './routes/estadisticas.routes.js'
+import rutasIA from './routes/ia.routes.js';
 const app = express();
 
 // Habilitar CORS para cualquier origen
@@ -33,6 +34,7 @@ app.use('/api', rutasProveedores);
 app.use('/api', rutasDetalles_ventas);
 app.use('/api', rutasDetalles_compras);
 app.use('/api', rutasEstadisticas);
+app.use('/ia', rutasIA);
 // Manejo de rutas no encontradas
 app.use((req, res, next) => {
     res.status(404).json({
